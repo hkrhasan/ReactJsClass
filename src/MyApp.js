@@ -2,8 +2,8 @@ import React, { Component } from "react";
 
 export default class MyApp extends Component {
   // constructor => 1
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       showChild: true,
     };
@@ -23,7 +23,7 @@ export default class MyApp extends Component {
     return (
       <div>
         <div>
-          <input
+          {/* <input
             type="text"
             name="name"
             placeholder="Name"
@@ -40,7 +40,7 @@ export default class MyApp extends Component {
             name="contact"
             placeholder="Contact"
             onChange={this.onChange}
-          />
+          /> */}
         </div>
         {this.state.showChild ? <UserView user={this.state} /> : null}
 
@@ -57,32 +57,57 @@ export default class MyApp extends Component {
 }
 
 class UserView extends Component {
+  componentDidMount() {
+    console.log("componentDidMount");
+    // const title = document.getElementById("title");
+    // const id = document.getElementById("id");
+
+    // fetch("https://jsonplaceholder.typicode.com/todos/1")
+    //   .then((response) => response.json())
+    //   .then((json) => {
+    //     title.innerText = json.title;
+    //     id.innerText = json.id;
+    //   });
+
+    this.timerID = setInterval(() => {
+      this.setState({
+        date: new Date(),
+      });
+    }, 1000);
+  }
+
   constructor(props) {
     super(props);
+    this.state = {
+      date: new Date(),
+    };
+
     console.log("constructor");
+  }
+
+  shouldComponentUpdate(newProps, newState) {
+    const pM = this.state.date.getMinutes();
+    const nM = newState.date.getMinutes();
+
+    return pM !== nM;
   }
 
   render() {
     console.log("render");
-    const { name, age, contact } = this.props.user;
     return (
       <div>
-        <h1>Name: {name}</h1>
-        <h1>Age: {age}</h1>
-        <h1>Contact: {contact}</h1>
+        {/* <h1>
+          Title: <span id="title"></span>
+        </h1>
+        <h1>
+          id: <span id="id"></span>
+        </h1> */}
+        <h1>Current Time : {this.state.date.toLocaleTimeString()}</h1>
       </div>
     );
   }
 
-  componentDidMount() {
-    const h1 = document.querySelector("h1");
-    console.log(h1);
-  }
-
   componentWillUnmount() {
-    const h1 = document.querySelector("h1");
-    console.log(h1);
-
-    console.log("componentWillUnmount");
+    clearInterval(this.timerID);
   }
 }
